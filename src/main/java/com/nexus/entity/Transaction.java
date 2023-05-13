@@ -12,24 +12,24 @@ public class Transaction {
     private String method;
     private String currency;
 
-    private int amount;
+    private double amount;
 
     private String status;
     @Temporal(TemporalType.TIMESTAMP)
     private Date created;
 
-    @Column(name = "card_id")
-    private String cardId;
+    @Column(name = "card_number")
+    private String cardNumber;
 
     public Transaction(){}
-    public Transaction(Long id, String method, String currency, int amount, String status, Date created, String cardId) {
+    public Transaction(Long id, String method, String currency, double amount, String status, Date created, String cardNumber) {
         this.id = id;
         this.method = method;
         this.currency = currency;
         this.amount = amount;
         this.status = status;
         this.created = created;
-        this.cardId = cardId;
+        this.cardNumber = cardNumber;
     }
 
     public Long getId() {
@@ -56,11 +56,11 @@ public class Transaction {
         this.currency = currency;
     }
 
-    public int getAmount() {
+    public double getAmount() {
         return amount;
     }
 
-    public void setAmount(int amount) {
+    public void setAmount(double amount) {
         this.amount = amount;
     }
 
@@ -80,11 +80,11 @@ public class Transaction {
         this.created = created;
     }
 
-    public String getCardId() {
-        return cardId;
+    public String getCardNumber() {
+        return cardNumber;
     }
 
-    public void setCardId(String cardId) {
-        this.cardId = cardId;
+    public void setCardNumber(String cardNumber) {
+        this.cardNumber = cardNumber;
     }
 }

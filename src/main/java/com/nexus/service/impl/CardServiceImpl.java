@@ -22,17 +22,14 @@ public class CardServiceImpl implements CardService {
     @Override
     public Card createCard(Card card) {
         Calendar currentDate = Calendar.getInstance();
-        //Date currentDate = new Date();
+        Date date = new Date();
         card.setIssueDate(currentDate.getTime());
 
         currentDate.add(Calendar.YEAR, 3);
+        card.setFullExpirationDate(currentDate.getTime());
         int year = currentDate.get(Calendar.YEAR);
-        int month = currentDate.get(Calendar.MONTH);
-        StringBuilder str = new StringBuilder();
-        str.append(month);
-        str.append("/");
-        str.append(year);
-        card.setExpirationDate(str.toString());
+        int month = currentDate.get(Calendar.MONTH) + 1;
+        card.setExpirationDate(month+"/"+year);
 
         card.setActive(false);
         card.setBlocked(true);
@@ -46,9 +43,11 @@ public class CardServiceImpl implements CardService {
 
         Random random = new Random();
         long number = random.nextLong() % 9000000000L + 1000000000L;
-        Math.abs(number);
+        if(number < 0){
+            number = Math.abs(number);
+        }
         String cardNumber = id + String.valueOf(number);
-        cardInDB.setcardNumber(cardNumber);
+        cardInDB.setCardNumber(cardNumber);
         cardRepository.save(cardInDB);
         return cardNumber;
     }

@@ -28,6 +28,10 @@ public class Card {
     @Column(name = "expiration_date")
     private String expirationDate;
 
+    @Column(name = "full_expiration_date")
+    @Temporal(TemporalType.DATE)
+    private Date fullExpirationDate;
+
     private String currency;
 
     @Column(name = "is_active")
@@ -59,11 +63,11 @@ public class Card {
         this.id = id;
     }
 
-    public String getcardNumber() {
+    public String getCardNumber() {
         return cardNumber;
     }
 
-    public void setcardNumber(String cardNumber) {
+    public void setCardNumber(String cardNumber) {
         this.cardNumber = cardNumber;
     }
 
@@ -113,6 +117,14 @@ public class Card {
 
     public void setExpirationDate(String expirationDate) {
         this.expirationDate = expirationDate;
+    }
+
+    public Date getFullExpirationDate() {
+        return fullExpirationDate;
+    }
+
+    public void setFullExpirationDate(Date fullExpirationDate) {
+        this.fullExpirationDate = fullExpirationDate;
     }
 
     public String getCurrency() {

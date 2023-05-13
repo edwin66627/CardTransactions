@@ -32,25 +32,25 @@ public class CardController {
     }
 
     @PostMapping("/enroll")
-    private ResponseEntity<?> activateCard(@RequestBody Card card){
-        cardService.activateCard(card.getcardNumber());
+    private ResponseEntity<String> activateCard(@RequestBody Card card){
+        cardService.activateCard(card.getCardNumber());
         return new ResponseEntity("Card was successfully activated", OK);
     }
 
     @DeleteMapping("/{cardId}")
-    private ResponseEntity<?> blockCard(@PathVariable Long cardId){
+    private ResponseEntity<String> blockCard(@PathVariable Long cardId){
         cardService.blockCard(cardId);
         return new ResponseEntity("Card was successfully blocked", OK);
     }
 
     @PostMapping("/balance")
-    private ResponseEntity<?> rechargeBalance(@RequestBody Card card){
-        String newBalance = cardService.rechargeBalance(card.getcardNumber(), card.getBalance());
+    private ResponseEntity<String> rechargeBalance(@RequestBody Card card){
+        String newBalance = cardService.rechargeBalance(card.getCardNumber(), card.getBalance());
         return new ResponseEntity("Balance recharge was done successfully. New Balance is " + newBalance + " USD", OK);
     }
 
     @GetMapping("/balance/{cardId}")
-    private ResponseEntity<?> getBalance(@PathVariable Long cardId){
+    private ResponseEntity<String> getBalance(@PathVariable Long cardId){
         String balance = cardService.getBalance(cardId);
         return new ResponseEntity("Card Balance is " + balance + " USD", OK);
     }
