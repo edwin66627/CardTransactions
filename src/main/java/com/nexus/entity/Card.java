@@ -8,7 +8,7 @@ import java.util.Date;
 @SequenceGenerator(name = "card_seq", sequenceName = "card_seq", initialValue = 100001)
 public class Card {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "card_seq")
     private Long id;
 
     @Column(name = "card_id")
