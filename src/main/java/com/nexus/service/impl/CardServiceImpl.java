@@ -90,4 +90,12 @@ public class CardServiceImpl implements CardService {
 
         return String.format("%.2f",newBalance);
     }
+
+    @Override
+    public String getBalance(Long id) {
+        Card cardInDB = cardRepository.findById(id)
+                .orElseThrow(() ->new NoSuchElementException("Card with ID: "+id+" does not exist"));
+        double balance = cardInDB.getBalance();
+        return String.format("%.2f",balance);
+    }
 }

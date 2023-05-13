@@ -49,4 +49,10 @@ public class CardController {
         return new ResponseEntity("Balance recharge was done successfully. New Balance is " + newBalance + " USD", OK);
     }
 
+    @GetMapping("/balance/{cardId}")
+    private ResponseEntity<?> getBalance(@PathVariable Long cardId){
+        String balance = cardService.getBalance(cardId);
+        return new ResponseEntity("Card Balance is " + balance + " USD", OK);
+    }
+
 }

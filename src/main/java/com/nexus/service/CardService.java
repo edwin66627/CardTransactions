@@ -11,5 +11,6 @@ public interface CardService {
     void blockCard(Long id);
 
     String rechargeBalance(String cardNumber, double balance);
+    String getBalance(Long id);
 
 }
