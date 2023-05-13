@@ -11,8 +11,8 @@ public class Card {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "card_seq")
     private Long id;
 
-    @Column(name = "card_id")
-    private String cardId;
+    @Column(name = "card_number")
+    private String cardNumber;
 
     private String type;
     private double balance;
@@ -37,9 +37,9 @@ public class Card {
     private boolean isBlocked;
 
     public Card(){}
-    public Card(Long id, String cardId, String type, double balance, String firstName, String lastName, Date issueDate, String expirationDate, String currency, boolean isActive, boolean isBlocked) {
+    public Card(Long id, String cardNumber, String type, double balance, String firstName, String lastName, Date issueDate, String expirationDate, String currency, boolean isActive, boolean isBlocked) {
         this.id = id;
-        this.cardId = cardId;
+        this.cardNumber = cardNumber;
         this.type = type;
         this.balance = balance;
         this.firstName = firstName;
@@ -59,12 +59,12 @@ public class Card {
         this.id = id;
     }
 
-    public String getCardId() {
-        return cardId;
+    public String getcardNumber() {
+        return cardNumber;
     }
 
-    public void setCardId(String cardId) {
-        this.cardId = cardId;
+    public void setcardNumber(String cardNumber) {
+        this.cardNumber = cardNumber;
     }
 
     public String getType() {
