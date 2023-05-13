@@ -37,4 +37,10 @@ public class CardController {
         return new ResponseEntity("Card was successfully activated", OK);
     }
 
+    @DeleteMapping("/{cardId}")
+    private ResponseEntity<?> blockCard(@PathVariable Long cardId){
+        cardService.blockCard(cardId);
+        return new ResponseEntity("Card was successfully blocked", OK);
+    }
+
 }

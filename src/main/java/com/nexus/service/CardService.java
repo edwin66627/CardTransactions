@@ -8,5 +8,6 @@ public interface CardService {
     String generateCardNumber(Long id);
 
     void activateCard(String cardNumber);
+    void blockCard(Long id);
 
 }

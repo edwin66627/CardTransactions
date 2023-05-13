@@ -60,5 +60,15 @@ public class CardServiceImpl implements CardService {
 
         cardInDB.setActive(true);
         cardInDB.setBlocked(false);
+        cardRepository.save(cardInDB);
+    }
+
+    @Override
+    public void blockCard(Long id) {
+        Card cardInDB = cardRepository.findById(id)
+                .orElseThrow(() ->new NoSuchElementException("Card with ID: "+id+" does not exist"));
+
+        cardInDB.setBlocked(true);
+        cardRepository.save(cardInDB);
     }
 }
