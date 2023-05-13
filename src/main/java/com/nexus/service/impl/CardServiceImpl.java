@@ -6,6 +6,8 @@ import com.nexus.service.CardService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.*;
 
 @Service
@@ -70,5 +72,22 @@ public class CardServiceImpl implements CardService {
 
         cardInDB.setBlocked(true);
         cardRepository.save(cardInDB);
+    }
+
+    @Override
+    public String rechargeBalance(String cardNumber, double balance) {
+        Card cardInDB = cardRepository.findByCardNumber(cardNumber);
+        if(cardInDB == null){
+            throw new NoSuchElementException("Card with number: "+cardNumber+" does not exist");
+        }
+        if(balance < 1){
+            throw new IllegalArgumentException("Minimum balance amount to recharge is 1 USD");
+        }
+
+        double newBalance = cardInDB.getBalance() + balance;
+        cardInDB.setBalance(newBalance);
+        cardRepository.save(cardInDB);
+
+        return String.format("%.2f",newBalance);
     }
 }

@@ -43,4 +43,10 @@ public class CardController {
         return new ResponseEntity("Card was successfully blocked", OK);
     }
 
+    @PostMapping("/balance")
+    private ResponseEntity<?> rechargeBalance(@RequestBody Card card){
+        String newBalance = cardService.rechargeBalance(card.getcardNumber(), card.getBalance());
+        return new ResponseEntity("Balance recharge was done successfully. New Balance is " + newBalance + " USD", OK);
+    }
+
 }

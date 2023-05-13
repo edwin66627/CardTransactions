@@ -10,4 +10,6 @@ public interface CardService {
     void activateCard(String cardNumber);
     void blockCard(Long id);
 
+    String rechargeBalance(String cardNumber, double balance);
+
 }
