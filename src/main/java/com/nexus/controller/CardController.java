@@ -1,6 +1,7 @@
 package com.nexus.controller;
 
 import com.nexus.entity.Card;
+import com.nexus.exception.ExceptionHandling;
 import com.nexus.service.CardService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -11,8 +12,8 @@ import java.util.Map;
 
 import static org.springframework.http.HttpStatus.*;
 @RestController
-@RequestMapping("/card")
-public class CardController {
+@RequestMapping(path = { "/", "/card"})
+public class CardController extends ExceptionHandling {
 
     private CardService cardService;
     @Autowired

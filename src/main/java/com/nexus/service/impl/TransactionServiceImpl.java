@@ -1,5 +1,7 @@
 package com.nexus.service.impl;
 
+import com.nexus.constant.CardExceptionMessage;
+import com.nexus.constant.TransactionExceptionMessage;
 import com.nexus.entity.Card;
 import com.nexus.entity.Transaction;
 import com.nexus.repository.CardRepository;
@@ -26,21 +28,21 @@ public class TransactionServiceImpl implements TransactionService {
     public void saveTransaction(String cardNumber, double amount) {
         Card cardInDB = cardRepository.findByCardNumber(cardNumber);
         if(cardInDB == null){
-            throw new NoSuchElementException("Card with number: "+cardNumber+" does not exist");
+            throw new NoSuchElementException(String.format(CardExceptionMessage.NO_SUCH_ELEMENT, "number", cardNumber));
         }
         if(cardInDB.getBalance() < amount){
-            throw new IllegalArgumentException("Insufficient balance");
+            throw new IllegalArgumentException(TransactionExceptionMessage.NOT_ENOUGH_BALANCE);
+        }
+        if(!cardInDB.isActive()){
+            throw new IllegalArgumentException(CardExceptionMessage.NOT_ACTIVATED);
         }
         if(cardInDB.isBlocked()){
-            throw new IllegalArgumentException("Card is not activated. The transaction cannot be performed");
-        }
-        if(cardInDB.isBlocked()){
-            throw new IllegalArgumentException("Card is blocked. The transaction cannot be performed");
+            throw new IllegalArgumentException(CardExceptionMessage.BLOCKED);
         }
         Date currentDate = new Date();
         int comparisonResult = currentDate.compareTo(cardInDB.getFullExpirationDate());
         if (comparisonResult > 0) {
-            System.out.println("Card has expired. The transaction cannot be performed");
+            throw new IllegalArgumentException(CardExceptionMessage.EXPIRED);
         }
 
         double currentBalance = cardInDB.getBalance();
@@ -61,7 +63,8 @@ public class TransactionServiceImpl implements TransactionService {
     @Override
     public Transaction getTransaction(Long id) {
         Transaction transaction = transactionRepository.findById(id)
-                .orElseThrow(() ->new NoSuchElementException("Transaction with ID: "+id+" does not exist"));
+                .orElseThrow(() ->new NoSuchElementException(String.format(TransactionExceptionMessage.NO_ELEMENT_BY_ID,
+                        id)));
 
         return transaction;
     }
@@ -70,16 +73,16 @@ public class TransactionServiceImpl implements TransactionService {
     public void cancelTransaction(Long transactionId, String cardNumber) throws NoSuchElementException{
         Transaction transactionInDB = transactionRepository.findByIdAndCardNumber(transactionId,cardNumber);
         if(transactionInDB == null){
-            throw new NoSuchElementException("A transaction with Id "+transactionId+ " and card number " +
-                cardNumber+ " does not exist");
+            throw new NoSuchElementException(String.format(TransactionExceptionMessage.NO_ELEMENT_BY_ID_AND_NUMBER,
+                    transactionId,cardNumber));
         }
         Date currentDate = new Date();
         Date transactionDate = transactionInDB.getCreated();
         long timeDifference = currentDate.getTime() - transactionDate.getTime();
-        long hoursDifference = (timeDifference / (1000 * 60 * 60)) % 24;
+        long daysDifference = (timeDifference / (1000 * 60 * 60 * 24)) % 365;
 
-        if(hoursDifference > 24){
-            throw new IllegalArgumentException("Transactions can only be canceled within the first 24 hours");
+        if(daysDifference> 1){
+            throw new IllegalArgumentException(TransactionExceptionMessage.INVALID_TIME_TO_CANCEL);
         }
 
         Card cardInDB = cardRepository.findByCardNumber(cardNumber);
@@ -89,6 +92,7 @@ public class TransactionServiceImpl implements TransactionService {
         transactionInDB.setStatus("Canceled");
         cardRepository.save(cardInDB);
         transactionRepository.save(transactionInDB);
+
     }
 
 
