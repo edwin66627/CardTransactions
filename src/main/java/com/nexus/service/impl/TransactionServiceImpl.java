@@ -57,4 +57,13 @@ public class TransactionServiceImpl implements TransactionService {
         cardRepository.save(cardInDB);
         transactionRepository.save(transaction);
     }
+
+    @Override
+    public Transaction getTransaction(Long id) {
+        Transaction transaction = transactionRepository.findById(id)
+                .orElseThrow(() ->new NoSuchElementException("Transaction with ID: "+id+" does not exist"));
+
+        return transaction;
+    }
+
 }
