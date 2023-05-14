@@ -1,29 +1,34 @@
 package com.nexus.controller;
 
+import com.nexus.dto.CreateCardDTO;
 import com.nexus.entity.Card;
 import com.nexus.exception.ExceptionHandling;
 import com.nexus.service.CardService;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.Collections;
 import java.util.Map;
 
 import static org.springframework.http.HttpStatus.*;
 @RestController
-@RequestMapping(path = { "/", "/card"})
+@RequestMapping("/card")
 public class CardController extends ExceptionHandling {
 
     private CardService cardService;
+    private ModelMapper mapper;
     @Autowired
-    public CardController(CardService cardService) {
+    public CardController(CardService cardService, ModelMapper mapper) {
         this.cardService = cardService;
+        this.mapper = mapper;
     }
     @PostMapping("/create")
-    private ResponseEntity<Card> createCard(@RequestBody Card card){
-        Card cardSaved = cardService.createCard(card);
-        return new ResponseEntity<>(cardSaved, CREATED);
+    private ResponseEntity<?> createCard(@Valid @RequestBody CreateCardDTO createCardDTO){
+        Card cardSaved = cardService.createCard(mapper.map(createCardDTO, Card.class));
+        return new ResponseEntity<>(mapper.map(cardSaved, CreateCardDTO.class), CREATED);
     }
 
     @GetMapping("/{productId}/number")

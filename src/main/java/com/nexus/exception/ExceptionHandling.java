@@ -5,16 +5,19 @@ import com.nexus.entity.HttpResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.web.servlet.error.ErrorController;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.validation.FieldError;
 
-import java.util.NoSuchElementException;
-import java.util.Objects;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import static org.springframework.http.HttpStatus.*;
 
@@ -50,6 +53,18 @@ public class ExceptionHandling implements ErrorController {
         return createHttpResponse(BAD_REQUEST, exception.getMessage());
     }
 
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<Map<String, List<String>>> handleValidationErrors(MethodArgumentNotValidException ex) {
+        List<String> errors = ex.getBindingResult().getFieldErrors()
+                .stream().map(FieldError::getDefaultMessage).collect(Collectors.toList());
+        return new ResponseEntity<>(getErrorsMap(errors), new HttpHeaders(), HttpStatus.BAD_REQUEST);
+    }
+
+    private Map<String, List<String>> getErrorsMap(List<String> errors) {
+        Map<String, List<String>> errorResponse = new HashMap<>();
+        errorResponse.put("errors", errors);
+        return errorResponse;
+    }
     @RequestMapping(ERROR_PATH)
     public ResponseEntity<HttpResponse> notFound404() {
         return createHttpResponse(NOT_FOUND, ExceptionMessage.NOT_FOUND_MSG);
