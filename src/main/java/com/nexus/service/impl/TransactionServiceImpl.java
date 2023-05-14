@@ -66,4 +66,30 @@ public class TransactionServiceImpl implements TransactionService {
         return transaction;
     }
 
+    @Override
+    public void cancelTransaction(Long transactionId, String cardNumber) throws NoSuchElementException{
+        Transaction transactionInDB = transactionRepository.findByIdAndCardNumber(transactionId,cardNumber);
+        if(transactionInDB == null){
+            throw new NoSuchElementException("A transaction with Id "+transactionId+ " and card number " +
+                cardNumber+ " does not exist");
+        }
+        Date currentDate = new Date();
+        Date transactionDate = transactionInDB.getCreated();
+        long timeDifference = currentDate.getTime() - transactionDate.getTime();
+        long hoursDifference = (timeDifference / (1000 * 60 * 60)) % 24;
+
+        if(hoursDifference > 24){
+            throw new IllegalArgumentException("Transactions can only be canceled within the first 24 hours");
+        }
+
+        Card cardInDB = cardRepository.findByCardNumber(cardNumber);
+
+        double oldBalance = cardInDB.getBalance();
+        cardInDB.setBalance(transactionInDB.getAmount() + oldBalance);
+        transactionInDB.setStatus("Canceled");
+        cardRepository.save(cardInDB);
+        transactionRepository.save(transactionInDB);
+    }
+
+
 }

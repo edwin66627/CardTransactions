@@ -30,4 +30,10 @@ public class TransactionController {
         return new ResponseEntity<>(transaction, OK);
     }
 
+    @PostMapping("/anulation")
+    private ResponseEntity<String> cancelTransaction(@RequestBody Transaction transaction){
+        transactionService.cancelTransaction(transaction.getId(), transaction.getCardNumber());
+        return new ResponseEntity("Transaction was canceled successfully", OK);
+    }
+
 }
