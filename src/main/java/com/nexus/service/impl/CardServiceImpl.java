@@ -1,9 +1,11 @@
 package com.nexus.service.impl;
 
+import com.nexus.constant.BusinessConstant;
 import com.nexus.constant.CardMessage;
 import com.nexus.entity.Card;
 import com.nexus.repository.CardRepository;
 import com.nexus.service.CardService;
+import com.nexus.utils.AppUtility;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -40,12 +42,11 @@ public class CardServiceImpl implements CardService {
         Card cardInDB = cardRepository.findById(id)
                 .orElseThrow(() ->new NoSuchElementException(String.format(CardMessage.NO_SUCH_ELEMENT, "id", id)));
 
-        Random random = new Random();
-        long number = random.nextLong() % 9000000000L + 1000000000L;
-        if(number < 0){
-            number = Math.abs(number);
-        }
-        String cardNumber = id + String.valueOf(number);
+        Long bottomLimit = 1000000000L;
+        Long topLimit = 9000000000L;
+        Long randomNumber = AppUtility.generateRandomLongNumber(bottomLimit,topLimit);
+
+        String cardNumber = id + String.valueOf(randomNumber);
         cardInDB.setCardNumber(cardNumber);
         cardRepository.save(cardInDB);
         return cardNumber;
@@ -78,7 +79,7 @@ public class CardServiceImpl implements CardService {
         if(cardInDB == null){
             throw new NoSuchElementException(String.format(CardMessage.NO_SUCH_ELEMENT, "number", cardNumber));
         }
-        if(balance < 1){
+        if(balance < BusinessConstant.MINIMUM_AMOUNT_TO_RECHARGE){
             throw new IllegalArgumentException(CardMessage.MIN_RECHARGE_AMOUNT);
         }
 

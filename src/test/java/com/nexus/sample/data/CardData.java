@@ -22,11 +22,13 @@ public class CardData {
 
     public static final Card getSavedCardData(){
         Card card = new Card();
-        card.setId(1000001L);
+        card.setId(CARD_ID);
         card.setFirstName("Alice");
         card.setLastName("Dane");
         card.setType("credit");
         card.setCurrency("USD");
+        card.setActive(false);
+        card.setBlocked(true);
         return card;
     }
 
