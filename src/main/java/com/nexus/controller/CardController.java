@@ -5,10 +5,13 @@ import com.nexus.dto.ActivateCardRequestDTO;
 import com.nexus.dto.CreateCardDTO;
 import com.nexus.dto.RechargeBalanceRequestDTO;
 import com.nexus.entity.Card;
+import com.nexus.entity.HttpResponse;
 import com.nexus.exception.ExceptionHandling;
 import com.nexus.service.CardService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -29,9 +32,10 @@ public class CardController extends ExceptionHandling {
         this.mapper = mapper;
     }
     @PostMapping("/create")
-    private ResponseEntity<?> createCard(@Valid @RequestBody CreateCardDTO createCardDTO){
+    private ResponseEntity<CreateCardDTO> createCard(@Valid @RequestBody CreateCardDTO createCardDTO){
         Card cardSaved = cardService.createCard(mapper.map(createCardDTO, Card.class));
-        return new ResponseEntity<>(mapper.map(cardSaved, CreateCardDTO.class), CREATED);
+        CreateCardDTO cardDTO = mapper.map(cardSaved, CreateCardDTO.class);
+        return ResponseEntity.status(CREATED).body(cardDTO);
     }
 
     @GetMapping("/{productId}/number")
@@ -41,27 +45,31 @@ public class CardController extends ExceptionHandling {
     }
 
     @PostMapping("/enroll")
-    private ResponseEntity<String> activateCard(@Valid @RequestBody ActivateCardRequestDTO activateCardDTO){
+    private ResponseEntity<HttpResponse> activateCard(@Valid @RequestBody ActivateCardRequestDTO activateCardDTO){
         cardService.activateCard(activateCardDTO.getCardNumber());
-        return new ResponseEntity(CardMessage.ACTIVATION_DONE, OK);
+        return sendResponse(CardMessage.ACTIVATION_DONE, OK);
     }
 
     @DeleteMapping("/{cardId}")
-    private ResponseEntity<String> blockCard(@PathVariable Long cardId){
+    private ResponseEntity<HttpResponse> blockCard(@PathVariable Long cardId){
         cardService.blockCard(cardId);
-        return new ResponseEntity(CardMessage.BLOCK_DONE, OK);
+        return sendResponse(CardMessage.BLOCK_DONE, OK);
     }
 
     @PostMapping("/balance")
-    private ResponseEntity<String> rechargeBalance(@Valid @RequestBody RechargeBalanceRequestDTO rechargeDTO){
+    private ResponseEntity<HttpResponse> rechargeBalance(@Valid @RequestBody RechargeBalanceRequestDTO rechargeDTO){
         String newBalance = cardService.rechargeBalance(rechargeDTO.getCardNumber(), rechargeDTO.getAmount());
-        return new ResponseEntity(String.format(CardMessage.RECHARGE_DONE, newBalance), OK);
+        return sendResponse(String.format(CardMessage.RECHARGE_DONE, newBalance), OK);
     }
 
     @GetMapping("/balance/{cardId}")
-    private ResponseEntity<String> getBalance(@PathVariable Long cardId){
+    private ResponseEntity<HttpResponse> getBalance(@PathVariable Long cardId){
         String balance = cardService.getBalance(cardId);
-        return new ResponseEntity(String.format(CardMessage.CARD_BALANCE, balance), OK);
+        return sendResponse(String.format(CardMessage.CARD_BALANCE, balance), OK);
+    }
+
+    private ResponseEntity<HttpResponse> sendResponse(String message, HttpStatus httpStatus) {
+        return new ResponseEntity<>(new HttpResponse(httpStatus.value(), httpStatus, message), httpStatus);
     }
 
 }
