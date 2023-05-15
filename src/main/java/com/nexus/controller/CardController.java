@@ -8,6 +8,7 @@ import com.nexus.entity.Card;
 import com.nexus.entity.HttpResponse;
 import com.nexus.exception.ExceptionHandling;
 import com.nexus.service.CardService;
+import com.nexus.utils.ResponseUtility;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -47,29 +48,25 @@ public class CardController extends ExceptionHandling {
     @PostMapping("/enroll")
     private ResponseEntity<HttpResponse> activateCard(@Valid @RequestBody ActivateCardRequestDTO activateCardDTO){
         cardService.activateCard(activateCardDTO.getCardNumber());
-        return sendResponse(CardMessage.ACTIVATION_DONE, OK);
+        return ResponseUtility.buildResponse(CardMessage.ACTIVATION_DONE, OK);
     }
 
     @DeleteMapping("/{cardId}")
     private ResponseEntity<HttpResponse> blockCard(@PathVariable Long cardId){
         cardService.blockCard(cardId);
-        return sendResponse(CardMessage.BLOCK_DONE, OK);
+        return ResponseUtility.buildResponse(CardMessage.BLOCK_DONE, OK);
     }
 
     @PostMapping("/balance")
     private ResponseEntity<HttpResponse> rechargeBalance(@Valid @RequestBody RechargeBalanceRequestDTO rechargeDTO){
         String newBalance = cardService.rechargeBalance(rechargeDTO.getCardNumber(), rechargeDTO.getAmount());
-        return sendResponse(String.format(CardMessage.RECHARGE_DONE, newBalance), OK);
+        return ResponseUtility.buildResponse(String.format(CardMessage.RECHARGE_DONE, newBalance), OK);
     }
 
     @GetMapping("/balance/{cardId}")
     private ResponseEntity<HttpResponse> getBalance(@PathVariable Long cardId){
         String balance = cardService.getBalance(cardId);
-        return sendResponse(String.format(CardMessage.CARD_BALANCE, balance), OK);
-    }
-
-    private ResponseEntity<HttpResponse> sendResponse(String message, HttpStatus httpStatus) {
-        return new ResponseEntity<>(new HttpResponse(httpStatus.value(), httpStatus, message), httpStatus);
+        return ResponseUtility.buildResponse(String.format(CardMessage.CARD_BALANCE, balance), OK);
     }
 
 }

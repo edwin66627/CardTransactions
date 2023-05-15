@@ -4,8 +4,10 @@ import com.nexus.constant.TransactionMessage;
 import com.nexus.dto.CancelTransactionRequestDTO;
 import com.nexus.dto.SaveTransactionRequestDTO;
 import com.nexus.dto.TransactionDTO;
+import com.nexus.entity.HttpResponse;
 import com.nexus.entity.Transaction;
 import com.nexus.service.TransactionService;
+import com.nexus.utils.ResponseUtility;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -28,9 +30,9 @@ public class TransactionController {
     }
 
     @PostMapping("/purchase")
-    private ResponseEntity<String> saveTransaction(@Valid @RequestBody SaveTransactionRequestDTO saveTransactionDTO){
+    private ResponseEntity<HttpResponse> saveTransaction(@Valid @RequestBody SaveTransactionRequestDTO saveTransactionDTO){
         transactionService.saveTransaction(saveTransactionDTO.getCardNumber(), saveTransactionDTO.getAmount());
-        return new ResponseEntity(TransactionMessage.SAVE_TRANSACTION_DONE, OK);
+        return ResponseUtility.buildResponse(TransactionMessage.SAVE_TRANSACTION_DONE, OK);
     }
 
     @GetMapping("/{transactionId}")
@@ -40,9 +42,9 @@ public class TransactionController {
     }
 
     @PostMapping("/annulation")
-    private ResponseEntity<String> cancelTransaction(@Valid @RequestBody CancelTransactionRequestDTO cancelTransactionDTO){
+    private ResponseEntity<HttpResponse> cancelTransaction(@Valid @RequestBody CancelTransactionRequestDTO cancelTransactionDTO){
         transactionService.cancelTransaction(cancelTransactionDTO.getTransactionId(), cancelTransactionDTO.getCardNumber());
-        return new ResponseEntity(TransactionMessage.CANCEL_TRANSACTION_DONE, OK);
+        return ResponseUtility.buildResponse(TransactionMessage.CANCEL_TRANSACTION_DONE, OK);
     }
 
 }

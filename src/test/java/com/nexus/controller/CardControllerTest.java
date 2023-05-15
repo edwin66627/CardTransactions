@@ -1,6 +1,5 @@
 package com.nexus.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nexus.constant.CardMessage;
 import com.nexus.dto.ActivateCardRequestDTO;
@@ -39,7 +38,7 @@ public class CardControllerTest {
     private ModelMapper mapper;
 
     @Autowired
-    private ObjectMapper objectMapper;
+    private ObjectMapper jsonMapper;
 
     @Test
     void createCard_ShouldReturnCardSaved() throws Exception {
@@ -53,7 +52,7 @@ public class CardControllerTest {
         MockHttpServletRequestBuilder mockRequest = post("/card/create")
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
-                .content(this.objectMapper.writeValueAsString(cardSaved));
+                .content(this.jsonMapper.writeValueAsString(cardSaved));
 
         mvc.perform(mockRequest)
                 .andExpect(status().isCreated())
@@ -84,7 +83,7 @@ public class CardControllerTest {
         mvc.perform(post("/card/enroll")
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
-                .content(this.objectMapper.writeValueAsString(requestDTO)))
+                .content(this.jsonMapper.writeValueAsString(requestDTO)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.message").value(CardMessage.ACTIVATION_DONE));
     }
@@ -112,7 +111,7 @@ public class CardControllerTest {
         mvc.perform(post("/card/balance", CardData.CARD_ID)
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
-                .content(this.objectMapper.writeValueAsString(requestDTO)))
+                .content(this.jsonMapper.writeValueAsString(requestDTO)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.message").value(newBalanceMessage));
     }
