@@ -1,10 +1,17 @@
 package com.nexus.controller;
 
+import com.nexus.constant.TransactionMessage;
+import com.nexus.dto.CancelTransactionRequestDTO;
+import com.nexus.dto.SaveTransactionRequestDTO;
+import com.nexus.dto.TransactionDTO;
 import com.nexus.entity.Transaction;
 import com.nexus.service.TransactionService;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
 
 import static org.springframework.http.HttpStatus.OK;
 
@@ -13,27 +20,29 @@ import static org.springframework.http.HttpStatus.OK;
 public class TransactionController {
 
     private TransactionService transactionService;
+    private ModelMapper mapper;
     @Autowired
-    public TransactionController(TransactionService transactionService) {
+    public TransactionController(TransactionService transactionService, ModelMapper mapper) {
         this.transactionService = transactionService;
+        this.mapper = mapper;
     }
 
     @PostMapping("/purchase")
-    private ResponseEntity<String> saveTransaction(@RequestBody Transaction transaction){
-        transactionService.saveTransaction(transaction.getCardNumber(), transaction.getAmount());
-        return new ResponseEntity("Transaction was successful", OK);
+    private ResponseEntity<String> saveTransaction(@Valid @RequestBody SaveTransactionRequestDTO saveTransactionDTO){
+        transactionService.saveTransaction(saveTransactionDTO.getCardNumber(), saveTransactionDTO.getAmount());
+        return new ResponseEntity(TransactionMessage.SAVE_TRANSACTION_DONE, OK);
     }
 
     @GetMapping("/{transactionId}")
-    private ResponseEntity<Transaction> getTransaction(@PathVariable Long transactionId){
+    private ResponseEntity<TransactionDTO> getTransaction(@PathVariable Long transactionId){
         Transaction transaction = transactionService.getTransaction(transactionId);
-        return new ResponseEntity<>(transaction, OK);
+        return new ResponseEntity<>(mapper.map(transaction, TransactionDTO.class), OK);
     }
 
-    @PostMapping("/anulation")
-    private ResponseEntity<String> cancelTransaction(@RequestBody Transaction transaction){
-        transactionService.cancelTransaction(transaction.getId(), transaction.getCardNumber());
-        return new ResponseEntity("Transaction was canceled successfully", OK);
+    @PostMapping("/annulation")
+    private ResponseEntity<String> cancelTransaction(@Valid @RequestBody CancelTransactionRequestDTO cancelTransactionDTO){
+        transactionService.cancelTransaction(cancelTransactionDTO.getTransactionId(), cancelTransactionDTO.getCardNumber());
+        return new ResponseEntity(TransactionMessage.CANCEL_TRANSACTION_DONE, OK);
     }
 
 }

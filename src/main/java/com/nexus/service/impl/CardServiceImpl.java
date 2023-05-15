@@ -1,15 +1,12 @@
 package com.nexus.service.impl;
 
-import com.nexus.constant.CardExceptionMessage;
-import com.nexus.constant.ExceptionMessage;
+import com.nexus.constant.CardMessage;
 import com.nexus.entity.Card;
 import com.nexus.repository.CardRepository;
 import com.nexus.service.CardService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.*;
 
 @Service
@@ -41,8 +38,7 @@ public class CardServiceImpl implements CardService {
     @Override
     public String generateCardNumber(Long id) {
         Card cardInDB = cardRepository.findById(id)
-                .orElseThrow(() ->new NoSuchElementException(String.format(CardExceptionMessage.NO_SUCH_ELEMENT,
-                        "id", id)));
+                .orElseThrow(() ->new NoSuchElementException(String.format(CardMessage.NO_SUCH_ELEMENT, "id", id)));
 
         Random random = new Random();
         long number = random.nextLong() % 9000000000L + 1000000000L;
@@ -59,7 +55,7 @@ public class CardServiceImpl implements CardService {
     public void activateCard(String cardNumber) {
         Card cardInDB = cardRepository.findByCardNumber(cardNumber);
         if(cardInDB == null){
-            throw new NoSuchElementException(String.format(CardExceptionMessage.NO_SUCH_ELEMENT, "number", cardNumber));
+            throw new NoSuchElementException(String.format(CardMessage.NO_SUCH_ELEMENT, "number", cardNumber));
         }
 
         cardInDB.setActive(true);
@@ -70,8 +66,7 @@ public class CardServiceImpl implements CardService {
     @Override
     public void blockCard(Long id) {
         Card cardInDB = cardRepository.findById(id)
-                .orElseThrow(() ->new NoSuchElementException(String
-                        .format(CardExceptionMessage.NO_SUCH_ELEMENT, "id", id)));
+                .orElseThrow(() ->new NoSuchElementException(String .format(CardMessage.NO_SUCH_ELEMENT, "id", id)));
 
         cardInDB.setBlocked(true);
         cardRepository.save(cardInDB);
@@ -81,10 +76,10 @@ public class CardServiceImpl implements CardService {
     public String rechargeBalance(String cardNumber, double balance) {
         Card cardInDB = cardRepository.findByCardNumber(cardNumber);
         if(cardInDB == null){
-            throw new NoSuchElementException(String.format(CardExceptionMessage.NO_SUCH_ELEMENT, "number", cardNumber));
+            throw new NoSuchElementException(String.format(CardMessage.NO_SUCH_ELEMENT, "number", cardNumber));
         }
         if(balance < 1){
-            throw new IllegalArgumentException(CardExceptionMessage.MIN_RECHARGE_AMOUNT);
+            throw new IllegalArgumentException(CardMessage.MIN_RECHARGE_AMOUNT);
         }
 
         double newBalance = cardInDB.getBalance() + balance;
@@ -97,8 +92,7 @@ public class CardServiceImpl implements CardService {
     @Override
     public String getBalance(Long id) {
         Card cardInDB = cardRepository.findById(id)
-                .orElseThrow(() ->new NoSuchElementException(String
-                        .format(CardExceptionMessage.NO_SUCH_ELEMENT, "id", id)));
+                .orElseThrow(() ->new NoSuchElementException(String.format(CardMessage.NO_SUCH_ELEMENT, "id", id)));
         double balance = cardInDB.getBalance();
         return String.format("%.2f",balance);
     }
