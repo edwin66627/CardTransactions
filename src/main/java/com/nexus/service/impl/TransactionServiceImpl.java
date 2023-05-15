@@ -1,5 +1,6 @@
 package com.nexus.service.impl;
 
+import com.nexus.constant.BusinessConstant;
 import com.nexus.constant.CardMessage;
 import com.nexus.constant.TransactionMessage;
 import com.nexus.entity.Card;
@@ -53,7 +54,7 @@ public class TransactionServiceImpl implements TransactionService {
         transaction.setMethod(cardInDB.getType());
         transaction.setCurrency(cardInDB.getCurrency());
         transaction.setAmount(amount);
-        transaction.setStatus("Accepted");
+        transaction.setStatus(BusinessConstant.TRANSACTION_ACCEPTED);
         transaction.setCardNumber(cardNumber);
 
         cardRepository.save(cardInDB);
@@ -89,7 +90,7 @@ public class TransactionServiceImpl implements TransactionService {
 
         double oldBalance = cardInDB.getBalance();
         cardInDB.setBalance(transactionInDB.getAmount() + oldBalance);
-        transactionInDB.setStatus("Canceled");
+        transactionInDB.setStatus(BusinessConstant.TRANSACTION_CANCELED);
         cardRepository.save(cardInDB);
         transactionRepository.save(transactionInDB);
 

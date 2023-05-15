@@ -23,11 +23,9 @@ public class CardServiceImpl implements CardService {
     @Override
     public Card createCard(Card card) {
         Calendar currentDate = Calendar.getInstance();
-        Date date = new Date();
         card.setIssueDate(currentDate.getTime());
 
-        currentDate.add(Calendar.YEAR, 3);
-        card.setFullExpirationDate(currentDate.getTime());
+        card.setFullExpirationDate(AppUtility.addYearsToDate(currentDate, BusinessConstant.CARD_VALIDITY_IN_YEARS));
         int year = currentDate.get(Calendar.YEAR);
         int month = currentDate.get(Calendar.MONTH) + 1;
         card.setExpirationDate(month+"/"+year);

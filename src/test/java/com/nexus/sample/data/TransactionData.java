@@ -5,6 +5,8 @@ import com.nexus.dto.SaveTransactionRequestDTO;
 import com.nexus.dto.TransactionDTO;
 import com.nexus.entity.Transaction;
 
+import java.util.Date;
+
 public class TransactionData {
     public static final String CARD_NUMBER = "1001529311360714";
     public static final double AMOUNT = 2;
@@ -22,6 +24,8 @@ public class TransactionData {
         transaction.setId(TRANSACTION_ID);
         transaction.setMethod(METHOD);
         transaction.setAmount(AMOUNT);
+        transaction.setCreated(new Date());
+
         return transaction;
     }
 
