@@ -7,6 +7,7 @@ public class CardMessage {
     public static final String NOT_ACTIVATED = "Card is not activated. The transaction cannot be performed";
     public static final String BLOCKED = "Card is blocked. The transaction cannot be performed";
     public static final String EXPIRED = "Card has expired. The transaction cannot be performed";
+    public static final String ALREADY_HAS_NUMBER_ASSIGNED = "Card already has a number assigned. Current number is %s";
 
     // SUCCESSFUL MESSAGES
     public static final String ACTIVATION_DONE = "Card was successfully activated";

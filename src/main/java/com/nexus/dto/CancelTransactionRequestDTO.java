@@ -4,7 +4,7 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
 public class CancelTransactionRequestDTO {
-    @NotNull(message = "Transaction number is mandatory to cancel the transaction")
+    @NotEmpty(message = "Transaction number is mandatory to cancel the transaction")
     private String transactionNumber;
     @NotEmpty(message = "Card number is mandatory to cancel the transaction")
     private String cardNumber;

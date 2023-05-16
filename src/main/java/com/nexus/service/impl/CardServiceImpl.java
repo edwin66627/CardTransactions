@@ -40,6 +40,10 @@ public class CardServiceImpl implements CardService {
         Card cardInDB = cardRepository.findById(id)
                 .orElseThrow(() ->new NoSuchElementException(String.format(CardMessage.NO_SUCH_ELEMENT, "id", id)));
 
+        if(cardInDB.getCardNumber() != null){
+            throw new IllegalArgumentException(String.format(CardMessage.ALREADY_HAS_NUMBER_ASSIGNED, cardInDB.getCardNumber()));
+        }
+
         Long bottomLimit = 1000000000L;
         Long topLimit = 9000000000L;
         Long randomNumber = AppUtility.generateRandomLongNumber(bottomLimit,topLimit);

@@ -62,6 +62,18 @@ public class CardServiceTest {
     }
 
     @Test
+    void throwExceptionWhenCardAlreadyHasNumberAssigned(){
+        Card cardInDB = CardData.getSavedCardData();
+        cardInDB.setCardNumber(CardData.CARD_NUMBER);
+
+        when(cardRepository.findById(CardData.CARD_ID)).thenReturn(Optional.of(cardInDB));
+
+        assertThrows(IllegalArgumentException.class,
+                () -> cardService.generateCardNumber(CardData.CARD_ID));
+        verifyNoMoreInteractions(cardRepository);
+    }
+
+    @Test
     void activateCard_ShouldActivateAndUnblockCardFoundInDB(){
         Card cardInDB = CardData.getSavedCardData();
 
