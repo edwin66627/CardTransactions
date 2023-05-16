@@ -137,6 +137,7 @@ public class TransactionServiceTest {
     @Test
     void cancelTransaction_ShouldCancelTransactionDoneWithin24Hours(){
         Transaction transactionInDB = TransactionData.getTransactionData();
+        transactionInDB.setStatus(BusinessConstant.TRANSACTION_ACCEPTED);
         Card cardInDB = CardData.getSavedCardData();
         cardInDB.setBalance(8);
 
@@ -160,13 +161,25 @@ public class TransactionServiceTest {
     @Test
     void throwExceptionWhenTransactionIsMoreThanADayOldWhileCancelingTransaction(){
         Transaction transactionInDB = TransactionData.getTransactionData();
+        transactionInDB.setStatus(BusinessConstant.TRANSACTION_ACCEPTED);
         transactionInDB.setCreated(new Date("13-May-2023"));
 
         when(transactionRepository.findByTransactionNumberAndCardNumber(anyString(), anyString())).thenReturn(transactionInDB);
         assertThrows(IllegalArgumentException.class,
                 () -> transactionService.cancelTransaction(TransactionData.TRANSACTION_NUMBER, TransactionData.CARD_NUMBER));
         verifyNoMoreInteractions(transactionRepository);
+    }
 
+    @Test
+    void throwExceptionWhenCancelingTransactionThatWasCanceledBefore(){
+        Transaction transactionInDB = TransactionData.getTransactionData();
+        transactionInDB.setStatus(BusinessConstant.TRANSACTION_CANCELED);
+
+        when(transactionRepository.findByTransactionNumberAndCardNumber(anyString(), anyString())).thenReturn(transactionInDB);
+
+        assertThrows(IllegalArgumentException.class,
+                () -> transactionService.cancelTransaction(TransactionData.TRANSACTION_NUMBER, TransactionData.CARD_NUMBER));
+        verifyNoMoreInteractions(transactionRepository);
     }
 
 }

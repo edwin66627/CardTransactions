@@ -83,6 +83,11 @@ public class TransactionServiceImpl implements TransactionService {
             throw new NoSuchElementException(String.format(TransactionMessage.NO_ELEMENT_BY_TRANSACTION_NUMBER_AND_NUMBER,
                     transactionNumber,cardNumber));
         }
+
+        if(transactionInDB.getStatus().equals(BusinessConstant.TRANSACTION_CANCELED)){
+            throw new IllegalArgumentException(TransactionMessage.TRANSACTION_ALREADY_CANCELED);
+        }
+
         Date currentDate = new Date();
         Date transactionDate = transactionInDB.getCreated();
         long timeDifference = currentDate.getTime() - transactionDate.getTime();
