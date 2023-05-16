@@ -21,6 +21,7 @@ import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
@@ -37,7 +38,7 @@ public class TransactionServiceTest {
     private TransactionServiceImpl transactionService;
 
     @Test
-    void saveTransaction_ShouldStoreTransaction(){
+    void saveTransaction_ShouldStoreTransactionAndReturnTransactionNumber(){
         Card cardInDB = CardData.getSavedCardData();
         cardInDB.setCardNumber(CardData.CARD_NUMBER);
         cardInDB.setBalance(100);
@@ -47,8 +48,9 @@ public class TransactionServiceTest {
 
         when(cardRepository.findByCardNumber(anyString())).thenReturn(cardInDB);
 
-        transactionService.saveTransaction(cardInDB.getCardNumber(), TransactionData.AMOUNT);
+        String transactionNumber = transactionService.saveTransaction(cardInDB.getCardNumber(), TransactionData.AMOUNT);
         assertThat(cardInDB.getBalance()).isEqualTo(98.0);
+        assertEquals(transactionNumber.length(), 6);
     }
 
     @Test
@@ -116,19 +118,19 @@ public class TransactionServiceTest {
     void getTransaction_ShouldReturnTransactionFoundInDB(){
         Transaction transaction = TransactionData.getTransactionData();
 
-        when(transactionRepository.findById(anyLong())).thenReturn(Optional.of(transaction));
+        when(transactionRepository.findByTransactionNumber(anyString())).thenReturn(transaction);
 
-        Transaction transactionInDB = transactionService.getTransaction(TransactionData.TRANSACTION_ID);
+        Transaction transactionInDB = transactionService.getTransaction(TransactionData.TRANSACTION_NUMBER);
         assertThat(transactionInDB.getAmount()).isEqualTo(2);
         assertThat(transactionInDB.getMethod()).isEqualTo("credit");
     }
 
     @Test
     void throwExceptionWhenBalanceNotEnoughWhileGettingTransaction(){
-        when(transactionRepository.findById(anyLong())).thenReturn(Optional.empty());
+        when(transactionRepository.findByTransactionNumber(anyString())).thenReturn(null);
 
         assertThrows(NoSuchElementException.class,
-                () -> transactionService.getTransaction(TransactionData.TRANSACTION_ID));
+                () -> transactionService.getTransaction(TransactionData.TRANSACTION_NUMBER));
         verifyNoMoreInteractions(transactionRepository);
     }
 
@@ -138,20 +140,20 @@ public class TransactionServiceTest {
         Card cardInDB = CardData.getSavedCardData();
         cardInDB.setBalance(8);
 
-        when(transactionRepository.findByIdAndCardNumber(anyLong(), anyString())).thenReturn(transactionInDB);
+        when(transactionRepository.findByTransactionNumberAndCardNumber(anyString(), anyString())).thenReturn(transactionInDB);
         when(cardRepository.findByCardNumber(CardData.CARD_NUMBER)).thenReturn(cardInDB);
 
-        transactionService.cancelTransaction(TransactionData.TRANSACTION_ID, TransactionData.CARD_NUMBER);
+        transactionService.cancelTransaction(TransactionData.TRANSACTION_NUMBER, TransactionData.CARD_NUMBER);
         assertThat(cardInDB.getBalance()).isEqualTo(10);
         assertThat(transactionInDB.getStatus()).isEqualTo(BusinessConstant.TRANSACTION_CANCELED);
     }
 
     @Test
     void throwExceptionWhenTransactionNotFoundWhileCancelingTransaction(){
-        when(transactionRepository.findByIdAndCardNumber(anyLong(), anyString())).thenReturn(null);
+        when(transactionRepository.findByTransactionNumberAndCardNumber(anyString(), anyString())).thenReturn(null);
 
         assertThrows(NoSuchElementException.class,
-                () -> transactionService.cancelTransaction(TransactionData.TRANSACTION_ID, TransactionData.CARD_NUMBER));
+                () -> transactionService.cancelTransaction(TransactionData.TRANSACTION_NUMBER, TransactionData.CARD_NUMBER));
         verifyNoMoreInteractions(transactionRepository);
     }
 
@@ -160,9 +162,9 @@ public class TransactionServiceTest {
         Transaction transactionInDB = TransactionData.getTransactionData();
         transactionInDB.setCreated(new Date("13-May-2023"));
 
-        when(transactionRepository.findByIdAndCardNumber(anyLong(), anyString())).thenReturn(transactionInDB);
+        when(transactionRepository.findByTransactionNumberAndCardNumber(anyString(), anyString())).thenReturn(transactionInDB);
         assertThrows(IllegalArgumentException.class,
-                () -> transactionService.cancelTransaction(TransactionData.TRANSACTION_ID, TransactionData.CARD_NUMBER));
+                () -> transactionService.cancelTransaction(TransactionData.TRANSACTION_NUMBER, TransactionData.CARD_NUMBER));
         verifyNoMoreInteractions(transactionRepository);
 
     }

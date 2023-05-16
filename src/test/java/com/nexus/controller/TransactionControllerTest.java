@@ -38,15 +38,17 @@ public class TransactionControllerTest {
     @Test
     void saveTransaction_ShouldSaveAndReturnMessageBack() throws Exception {
         SaveTransactionRequestDTO requestDTO = TransactionData.getTransactionToSave();
+        String transactionNumber = TransactionData.TRANSACTION_NUMBER;
+        String message = String.format(TransactionMessage.SAVE_TRANSACTION_DONE, transactionNumber);
 
-        doNothing().when(transactionService).saveTransaction(anyString(), anyDouble());
+        when(transactionService.saveTransaction(anyString(), anyDouble())).thenReturn(transactionNumber);
 
         mvc.perform(post("/transaction/purchase")
             .contentType(MediaType.APPLICATION_JSON)
             .accept(MediaType.APPLICATION_JSON)
             .content(this.jsonMapper.writeValueAsString(requestDTO)))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.message").value(TransactionMessage.SAVE_TRANSACTION_DONE));
+                .andExpect(jsonPath("$.message").value(message));
     }
 
     @Test
@@ -54,10 +56,10 @@ public class TransactionControllerTest {
         Transaction transactionInDB = TransactionData.getTransactionData();
         TransactionDTO transactionDTO = TransactionData.getTransactionDataDTO();
 
-        when(transactionService.getTransaction(anyLong())).thenReturn(transactionInDB);
+        when(transactionService.getTransaction(anyString())).thenReturn(transactionInDB);
         when(mapper.map(any(), any())).thenReturn(transactionDTO);
 
-        mvc.perform(get("/transaction/{transactionId}", TransactionData.TRANSACTION_ID)
+        mvc.perform(get("/transaction/{transactionNumber}", TransactionData.TRANSACTION_NUMBER)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(1L))
@@ -68,7 +70,7 @@ public class TransactionControllerTest {
     void cancelTransaction_ShouldSendCancelMessageBack() throws Exception {
         CancelTransactionRequestDTO requestDTO = TransactionData.getCancelTrasactionData();
 
-        doNothing().when(transactionService).cancelTransaction(anyLong(),anyString());
+        doNothing().when(transactionService).cancelTransaction(anyString(),anyString());
 
         mvc.perform(post("/transaction/annulation")
                         .contentType(MediaType.APPLICATION_JSON)

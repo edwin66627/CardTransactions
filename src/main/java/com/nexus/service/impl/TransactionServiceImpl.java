@@ -8,6 +8,7 @@ import com.nexus.entity.Transaction;
 import com.nexus.repository.CardRepository;
 import com.nexus.repository.TransactionRepository;
 import com.nexus.service.TransactionService;
+import com.nexus.utils.AppUtility;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -26,7 +27,7 @@ public class TransactionServiceImpl implements TransactionService {
     }
 
     @Override
-    public void saveTransaction(String cardNumber, double amount) {
+    public String saveTransaction(String cardNumber, double amount) {
         Card cardInDB = cardRepository.findByCardNumber(cardNumber);
         if(cardInDB == null){
             throw new NoSuchElementException(String.format(CardMessage.NO_SUCH_ELEMENT, "number", cardNumber));
@@ -50,6 +51,8 @@ public class TransactionServiceImpl implements TransactionService {
         cardInDB.setBalance(currentBalance - amount);
 
         Transaction transaction = new Transaction();
+        String transactionNumber = AppUtility.generateRandomLongNumber(1L,999999L).toString();
+        transaction.setTransactionNumber(transactionNumber);
         transaction.setCreated(currentDate);
         transaction.setMethod(cardInDB.getType());
         transaction.setCurrency(cardInDB.getCurrency());
@@ -59,23 +62,26 @@ public class TransactionServiceImpl implements TransactionService {
 
         cardRepository.save(cardInDB);
         transactionRepository.save(transaction);
+        return transactionNumber;
     }
 
     @Override
-    public Transaction getTransaction(Long id) {
-        Transaction transaction = transactionRepository.findById(id)
-                .orElseThrow(() ->new NoSuchElementException(String.format(TransactionMessage.NO_ELEMENT_BY_ID,
-                        id)));
+    public Transaction getTransaction(String transactionNumber) {
+        Transaction transaction = transactionRepository.findByTransactionNumber(transactionNumber);
+        if(transaction == null){
+            throw new NoSuchElementException(String.format(TransactionMessage.NO_ELEMENT_BY_TRANSACTION_NUMBER,
+                        transactionNumber));
+        }
 
         return transaction;
     }
 
     @Override
-    public void cancelTransaction(Long transactionId, String cardNumber) throws NoSuchElementException{
-        Transaction transactionInDB = transactionRepository.findByIdAndCardNumber(transactionId,cardNumber);
+    public void cancelTransaction(String transactionNumber, String cardNumber) throws NoSuchElementException{
+        Transaction transactionInDB = transactionRepository.findByTransactionNumberAndCardNumber(transactionNumber,cardNumber);
         if(transactionInDB == null){
-            throw new NoSuchElementException(String.format(TransactionMessage.NO_ELEMENT_BY_ID_AND_NUMBER,
-                    transactionId,cardNumber));
+            throw new NoSuchElementException(String.format(TransactionMessage.NO_ELEMENT_BY_TRANSACTION_NUMBER_AND_NUMBER,
+                    transactionNumber,cardNumber));
         }
         Date currentDate = new Date();
         Date transactionDate = transactionInDB.getCreated();

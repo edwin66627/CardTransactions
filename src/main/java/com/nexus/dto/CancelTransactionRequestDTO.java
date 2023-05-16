@@ -4,24 +4,24 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
 public class CancelTransactionRequestDTO {
-    @NotNull(message = "Transaction id is mandatory to cancel the transaction")
-    private Long transactionId;
+    @NotNull(message = "Transaction number is mandatory to cancel the transaction")
+    private String transactionNumber;
     @NotEmpty(message = "Card number is mandatory to cancel the transaction")
     private String cardNumber;
 
     public CancelTransactionRequestDTO(){}
 
-    public CancelTransactionRequestDTO(Long transactionId, String cardNumber) {
-        this.transactionId = transactionId;
+    public CancelTransactionRequestDTO(String transactionNumber, String cardNumber) {
+        this.transactionNumber = transactionNumber;
         this.cardNumber = cardNumber;
     }
 
-    public Long getTransactionId() {
-        return transactionId;
+    public String getTransactionNumber() {
+        return transactionNumber;
     }
 
-    public void setTransactionId(Long transactionId) {
-        this.transactionId = transactionId;
+    public void setTransactionNumber(String transactionNumber) {
+        this.transactionNumber = transactionNumber;
     }
 
     public String getCardNumber() {

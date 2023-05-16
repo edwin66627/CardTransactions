@@ -9,6 +9,9 @@ public class Transaction {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
+
+    @Column(name = "transaction_number")
+    private String transactionNumber;
     private String method;
     private String currency;
 
@@ -22,8 +25,9 @@ public class Transaction {
     private String cardNumber;
 
     public Transaction(){}
-    public Transaction(Long id, String method, String currency, double amount, String status, Date created, String cardNumber) {
+    public Transaction(Long id, String transactionNumber, String method, String currency, double amount, String status, Date created, String cardNumber) {
         this.id = id;
+        this.transactionNumber = transactionNumber;
         this.method = method;
         this.currency = currency;
         this.amount = amount;
@@ -38,6 +42,14 @@ public class Transaction {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getTransactionNumber() {
+        return transactionNumber;
+    }
+
+    public void setTransactionNumber(String transactionNumber) {
+        this.transactionNumber = transactionNumber;
     }
 
     public String getMethod() {

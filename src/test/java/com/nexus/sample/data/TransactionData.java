@@ -9,6 +9,7 @@ import java.util.Date;
 
 public class TransactionData {
     public static final String CARD_NUMBER = "1001529311360714";
+    public static final String TRANSACTION_NUMBER = "931136";
     public static final double AMOUNT = 2;
     public static final Long TRANSACTION_ID = 1L;
     public static final String METHOD = "credit";
@@ -22,6 +23,7 @@ public class TransactionData {
     public static final Transaction getTransactionData(){
         Transaction transaction = new Transaction();
         transaction.setId(TRANSACTION_ID);
+        transaction.setTransactionNumber(TRANSACTION_NUMBER);
         transaction.setMethod(METHOD);
         transaction.setAmount(AMOUNT);
         transaction.setCreated(new Date());
@@ -39,7 +41,7 @@ public class TransactionData {
 
     public static final CancelTransactionRequestDTO getCancelTrasactionData(){
         CancelTransactionRequestDTO requestDTO = new CancelTransactionRequestDTO();
-        requestDTO.setTransactionId(TRANSACTION_ID);
+        requestDTO.setTransactionNumber(TRANSACTION_NUMBER);
         requestDTO.setCardNumber(CARD_NUMBER);
         return requestDTO;
     }

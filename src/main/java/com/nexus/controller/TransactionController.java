@@ -37,16 +37,16 @@ public class TransactionController {
             @Parameter(description = "Transaction information to be saved. Card number of the Card to be charged. Amount" +
                     "to be charged, which minimum value is 1 USD")
             @Valid @RequestBody SaveTransactionRequestDTO saveTransactionDTO){
-        transactionService.saveTransaction(saveTransactionDTO.getCardNumber(), saveTransactionDTO.getAmount());
-        return ResponseUtility.buildResponse(TransactionMessage.SAVE_TRANSACTION_DONE, OK);
+        String transactionNumber = transactionService.saveTransaction(saveTransactionDTO.getCardNumber(), saveTransactionDTO.getAmount());
+        return ResponseUtility.buildResponse(String.format(TransactionMessage.SAVE_TRANSACTION_DONE, transactionNumber), OK);
     }
 
-    @GetMapping("/{transactionId}")
+    @GetMapping("/{transactionNumber}")
     @Operation(summary = "Get a Transaction", description = "Get details of an existing Transaction")
     private ResponseEntity<TransactionDTO> getTransaction(
-            @Parameter(description = "Transaction id field to fetch Transaction information")
-            @PathVariable Long transactionId){
-        Transaction transaction = transactionService.getTransaction(transactionId);
+            @Parameter(description = "Transaction number field to fetch Transaction information")
+            @PathVariable String transactionNumber){
+        Transaction transaction = transactionService.getTransaction(transactionNumber);
         return new ResponseEntity<>(mapper.map(transaction, TransactionDTO.class), OK);
     }
 
@@ -54,10 +54,10 @@ public class TransactionController {
     @Operation(summary = "Cancel a Transaction",
             description = "Cancel a Transaction, as long as, it's not more than one day old")
     private ResponseEntity<HttpResponse> cancelTransaction(
-            @Parameter(description = "Transaction id field to fetch Transaction. " +
+            @Parameter(description = "Transaction number field to fetch Transaction. " +
                     "Card number of the Card to which the funds have to be returned")
             @Valid @RequestBody CancelTransactionRequestDTO cancelTransactionDTO){
-        transactionService.cancelTransaction(cancelTransactionDTO.getTransactionId(), cancelTransactionDTO.getCardNumber());
+        transactionService.cancelTransaction(cancelTransactionDTO.getTransactionNumber(), cancelTransactionDTO.getCardNumber());
         return ResponseUtility.buildResponse(TransactionMessage.CANCEL_TRANSACTION_DONE, OK);
     }
 
