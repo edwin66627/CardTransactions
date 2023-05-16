@@ -51,7 +51,7 @@ public class TransactionServiceImpl implements TransactionService {
         cardInDB.setBalance(currentBalance - amount);
 
         Transaction transaction = new Transaction();
-        String transactionNumber = AppUtility.generateRandomLongNumber(1L,999999L).toString();
+        String transactionNumber = AppUtility.generateRandomLongNumber(100001L,999999L).toString();
         transaction.setTransactionNumber(transactionNumber);
         transaction.setCreated(currentDate);
         transaction.setMethod(cardInDB.getType());
