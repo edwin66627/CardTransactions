@@ -15,13 +15,8 @@ public class CreateCardDTO {
     @Pattern(regexp = "credit|debit", message = "Valid card types are : credit or debit")
     private String type;
     private double balance;
-    @NotEmpty(message = "First name is mandatory")
-    @Size(min=2, max=30, message = "First name must contain between 2 to 30 characters")
-    private String firstName;
-
-    @NotEmpty(message = "Last name is mandatory")
-    @Size(min=2, max=30, message = "Last name must contain between 2 to 30 characters")
-    private String lastName;
+    @NotEmpty(message = "Client id is mandatory")
+    private Long clientId;
 
     private Date issueDate;
     private String expirationDate;
@@ -34,13 +29,13 @@ public class CreateCardDTO {
     private boolean isBlocked;
 
     public CreateCardDTO(){}
-    public CreateCardDTO(Long id, String cardNumber, String type, double balance, String firstName, String lastName, Date issueDate, String expirationDate, Date fullExpirationDate, String currency, boolean isActive, boolean isBlocked) {
+
+    public CreateCardDTO(Long id, String cardNumber, String type, double balance, Long clientId, Date issueDate, String expirationDate, Date fullExpirationDate, String currency, boolean isActive, boolean isBlocked) {
         this.id = id;
         this.cardNumber = cardNumber;
         this.type = type;
         this.balance = balance;
-        this.firstName = firstName;
-        this.lastName = lastName;
+        this.clientId = clientId;
         this.issueDate = issueDate;
         this.expirationDate = expirationDate;
         this.fullExpirationDate = fullExpirationDate;
@@ -73,28 +68,19 @@ public class CreateCardDTO {
         this.type = type;
     }
 
+    public Long getClientId() {
+        return clientId;
+    }
+    public void setClientId(Long clientId) {
+        this.clientId = clientId;
+    }
+
     public double getBalance() {
         return balance;
     }
 
     public void setBalance(double balance) {
         this.balance = balance;
-    }
-
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
     }
 
     public Date getIssueDate() {

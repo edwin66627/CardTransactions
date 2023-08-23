@@ -16,12 +16,6 @@ public class Card {
 
     private String type;
     private double balance;
-    @Column(name = "first_name")
-    private String firstName;
-
-    @Column(name = "last_name")
-    private String lastName;
-
     @Column(name = "issue_date")
     @Temporal(TemporalType.DATE)
     private Date issueDate;
@@ -31,23 +25,21 @@ public class Card {
     @Column(name = "full_expiration_date")
     @Temporal(TemporalType.DATE)
     private Date fullExpirationDate;
-
     private String currency;
-
     @Column(name = "is_active")
     private boolean isActive;
-
     @Column(name = "is_blocked")
     private boolean isBlocked;
 
+    @ManyToOne
+    @JoinColumn(name = "client_id")
+    private Client client;
     public Card(){}
-    public Card(Long id, String cardNumber, String type, double balance, String firstName, String lastName, Date issueDate, String expirationDate, String currency, boolean isActive, boolean isBlocked) {
+    public Card(Long id, String cardNumber, String type, double balance, Date issueDate, String expirationDate, String currency, boolean isActive, boolean isBlocked) {
         this.id = id;
         this.cardNumber = cardNumber;
         this.type = type;
         this.balance = balance;
-        this.firstName = firstName;
-        this.lastName = lastName;
         this.issueDate = issueDate;
         this.expirationDate = expirationDate;
         this.currency = currency;
@@ -85,22 +77,6 @@ public class Card {
 
     public void setBalance(double balance) {
         this.balance = balance;
-    }
-
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
     }
 
     public Date getIssueDate() {
