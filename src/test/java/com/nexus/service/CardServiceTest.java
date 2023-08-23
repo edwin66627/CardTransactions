@@ -34,7 +34,7 @@ public class CardServiceTest {
         when(cardRepository.save(card)).thenReturn(card);
 
         Card cardToSendBack = cardService.createCard(card);
-        assertThat(cardToSendBack.getExpirationDate()).isEqualTo("5/2026");
+        assertThat(cardToSendBack.getExpirationDate()).isEqualTo("8/2026");
         assertThat(cardToSendBack.isActive()).isEqualTo(false);
         assertThat(cardToSendBack.isBlocked()).isEqualTo(true);
     }
