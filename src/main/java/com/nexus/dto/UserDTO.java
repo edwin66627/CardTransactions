@@ -1,14 +1,8 @@
-package com.nexus.entity;
-
-import jakarta.persistence.*;
+package com.nexus.dto;
 
 import java.util.Date;
 
-@MappedSuperclass
-public abstract class User {
-    @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    private Long id;
+public class UserDTO {
     private String firstName;
     private String lastName;
     private String username;
@@ -16,19 +10,12 @@ public abstract class User {
     private String address;
     private String role;
     private String password;
-    @Column(name = "last_login_date")
-    @Temporal(TemporalType.DATE)
-    private Date lastLoginDate;
-    @Column(name = "is_active")
     private boolean isActive;
-    @Column(name = "is_locked")
     private boolean isLocked;
 
-    public User() {
+    public UserDTO() {
     }
-
-    public User(Long id, String firstName, String lastName, String username, String email, String address, String role, String password, Date lastLoginDate, boolean isActive, boolean isLocked) {
-        this.id = id;
+    public UserDTO(String firstName, String lastName, String username, String email, String address, String role, String password, boolean isActive, boolean isLocked) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.username = username;
@@ -36,17 +23,8 @@ public abstract class User {
         this.address = address;
         this.role = role;
         this.password = password;
-        this.lastLoginDate = lastLoginDate;
         this.isActive = isActive;
         this.isLocked = isLocked;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public String getFirstName() {
@@ -103,14 +81,6 @@ public abstract class User {
 
     public void setPassword(String password) {
         this.password = password;
-    }
-
-    public Date getLastLoginDate() {
-        return lastLoginDate;
-    }
-
-    public void setLastLoginDate(Date lastLoginDate) {
-        this.lastLoginDate = lastLoginDate;
     }
 
     public boolean isActive() {

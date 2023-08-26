@@ -13,8 +13,6 @@ public class CardData {
     public static final String CARD_NUMBER = "1001529311360714";
     public static final Card getCardDataToSave(){
         Card card = new Card();
-        card.setFirstName("Alice");
-        card.setLastName("Dane");
         card.setType("credit");
         card.setCurrency("USD");
         return card;
@@ -23,8 +21,6 @@ public class CardData {
     public static final Card getSavedCardData(){
         Card card = new Card();
         card.setId(CARD_ID);
-        card.setFirstName("Alice");
-        card.setLastName("Dane");
         card.setType("credit");
         card.setCurrency("USD");
         card.setActive(false);
@@ -35,8 +31,6 @@ public class CardData {
     public static final CreateCardDTO getSavedCardDataDTO(){
         CreateCardDTO card = new CreateCardDTO();
         card.setId(1000001L);
-        card.setFirstName("Alice");
-        card.setLastName("Dane");
         card.setType("credit");
         card.setCurrency("USD");
         return card;
