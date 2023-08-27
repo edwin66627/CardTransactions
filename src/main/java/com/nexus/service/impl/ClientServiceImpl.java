@@ -43,4 +43,21 @@ public class ClientServiceImpl implements ClientService {
                 .orElseThrow(() -> new NoSuchElementException(String.format(ClientConstant.NO_SUCH_ELEMENT, "id", id)));
         return clientInDB;
     }
+
+    public void updateClient(Client client, Long id){
+        Client clientInDB = clientRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException(String.format(ClientConstant.NO_SUCH_ELEMENT, "id", id)));
+
+        clientInDB.setFirstName(client.getFirstName());
+        clientInDB.setLastName(client.getLastName());
+        clientInDB.setAddress(client.getAddress());
+        clientRepository.save(clientInDB);
+    }
+
+    public void deleteClient(Long id){
+        Client clientInDB = clientRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException(String.format(ClientConstant.NO_SUCH_ELEMENT, "id", id)));
+
+        clientRepository.deleteById(id);
+    }
 }

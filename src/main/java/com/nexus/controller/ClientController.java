@@ -3,6 +3,7 @@ package com.nexus.controller;
 import com.nexus.constant.ClientConstant;
 import com.nexus.dto.ClientDTO;
 import com.nexus.dto.CreateClientDTO;
+import com.nexus.dto.UpdateClientDTO;
 import com.nexus.dto.UserDTO;
 import com.nexus.entity.Client;
 import com.nexus.entity.HttpResponse;
@@ -10,6 +11,7 @@ import com.nexus.entity.User;
 import com.nexus.service.ClientService;
 import com.nexus.utils.ResponseUtility;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -53,6 +55,20 @@ public class ClientController {
         return new ResponseEntity<>(convertToClientDTO(clientInDB), OK);
     }
 
+    @PutMapping("/update/{id}")
+    public ResponseEntity<HttpResponse> updateClient(@RequestBody UpdateClientDTO updateClientDTO, @PathVariable("id") Long id){
+        clientService.updateClient(mapper.map(updateClientDTO, Client.class), id);
+        return ResponseUtility.buildResponse(ClientConstant.UPDATE_DONE, OK);
+    }
+
+    @DeleteMapping("/delete/{id}")
+    @Operation(summary = "Delete a Client", description = "Delete a Client by Id")
+    private ResponseEntity<HttpResponse> blockCard(
+            @Parameter(description = "Card id field used to fetch a Client and delete it")
+            @PathVariable Long id){
+        clientService.deleteClient(id);
+        return ResponseUtility.buildResponse(ClientConstant.DELETE_DONE, OK);
+    }
     private ClientDTO convertToClientDTO(Client client){
         return mapper.map(client, ClientDTO.class);
     }

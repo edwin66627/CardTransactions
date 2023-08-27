@@ -9,6 +9,7 @@ public interface ClientService {
     Client createClient(Client client);
     List<Client> getAllClients();
     Client getClientById(Long id);
-
+    void updateClient(Client client, Long id);
+    void deleteClient(Long id);
 
 }
