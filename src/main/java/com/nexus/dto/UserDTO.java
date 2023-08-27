@@ -1,14 +1,23 @@
 package com.nexus.dto;
 
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotEmpty;
 import java.util.Date;
 
 public class UserDTO {
+    @NotEmpty(message = "First name is mandatory")
     private String firstName;
+    @NotEmpty(message = "Last name is mandatory")
     private String lastName;
+    @NotEmpty(message = "Username is mandatory")
     private String username;
+    @Email(message = "Enter a valid email")
     private String email;
+    @NotEmpty(message = "Address is mandatory")
     private String address;
+    @NotEmpty(message = "Role is mandatory")
     private String role;
+    @NotEmpty(message = "Password is mandatory")
     private String password;
     private boolean isActive;
     private boolean isLocked;

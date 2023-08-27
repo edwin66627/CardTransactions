@@ -1,7 +1,7 @@
 package com.nexus.dto;
 
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 
 public class CancelTransactionRequestDTO {
     @NotEmpty(message = "Transaction number is mandatory to cancel the transaction")

@@ -1,8 +1,14 @@
 package com.nexus.dto;
 
+
+import jakarta.validation.constraints.NotEmpty;
+
 public class UpdateClientDTO {
+    @NotEmpty(message = "First name is mandatory")
     private String firstName;
+    @NotEmpty(message = "Last name is mandatory")
     private String lastName;
+    @NotEmpty(message = "Address is mandatory")
     private String address;
 
     public UpdateClientDTO() {

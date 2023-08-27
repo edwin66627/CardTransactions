@@ -1,6 +1,6 @@
 package com.nexus.dto;
 
-import javax.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotEmpty;
 
 public class ActivateCardRequestDTO {
     @NotEmpty(message = "Card number is mandatory to activate a card")

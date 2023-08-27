@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import jakarta.validation.Valid;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -36,7 +37,7 @@ public class ClientController {
     @PostMapping("/create")
     @Operation(summary = "Create a Client",
             description = "Create a Client")
-    private ResponseEntity<HttpResponse> createClient(@RequestBody CreateClientDTO createClientDTO){
+    private ResponseEntity<HttpResponse> createClient(@Valid @RequestBody CreateClientDTO createClientDTO){
         Client clientToSave = mapper.map(createClientDTO, Client.class);
         clientService.createClient(clientToSave);
         return ResponseUtility.buildResponse(ClientConstant.CREATION_DONE,CREATED);
@@ -56,7 +57,7 @@ public class ClientController {
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<HttpResponse> updateClient(@RequestBody UpdateClientDTO updateClientDTO, @PathVariable("id") Long id){
+    public ResponseEntity<HttpResponse> updateClient(@Valid @RequestBody UpdateClientDTO updateClientDTO, @PathVariable("id") Long id){
         clientService.updateClient(mapper.map(updateClientDTO, Client.class), id);
         return ResponseUtility.buildResponse(ClientConstant.UPDATE_DONE, OK);
     }
