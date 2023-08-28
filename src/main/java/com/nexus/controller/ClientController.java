@@ -35,8 +35,7 @@ public class ClientController {
         this.mapper = mapper;
     }
     @PostMapping("/create")
-    @Operation(summary = "Create a Client",
-            description = "Create a Client")
+    @Operation(summary = "Create a Client", description = "Save a new Client data")
     private ResponseEntity<HttpResponse> createClient(@Valid @RequestBody CreateClientDTO createClientDTO){
         Client clientToSave = mapper.map(createClientDTO, Client.class);
         clientService.createClient(clientToSave);
@@ -44,6 +43,7 @@ public class ClientController {
     }
 
     @GetMapping("/get-all")
+    @Operation(summary = "Get all Clients", description = "Get all Clients in Database")
     private ResponseEntity<List<ClientDTO>> getAllClients(){
         List<Client> clientsInDB = clientService.getAllClients();
         List<ClientDTO> clientsToReturn = clientsInDB.stream().map(this::convertToClientDTO).collect(Collectors.toList());
@@ -51,12 +51,14 @@ public class ClientController {
     }
 
     @GetMapping("/get-client/{id}")
+    @Operation(summary = "Get a Client", description = "Get a specific Client By Id")
     private ResponseEntity<ClientDTO> getClientById(@PathVariable("id") Long id){
         Client clientInDB = clientService.getClientById(id);
         return new ResponseEntity<>(convertToClientDTO(clientInDB), OK);
     }
 
     @PutMapping("/update/{id}")
+    @Operation(summary = "Update a Client", description = "Update a specific fetched by Id")
     public ResponseEntity<HttpResponse> updateClient(@Valid @RequestBody UpdateClientDTO updateClientDTO, @PathVariable("id") Long id){
         clientService.updateClient(mapper.map(updateClientDTO, Client.class), id);
         return ResponseUtility.buildResponse(ClientConstant.UPDATE_DONE, OK);
@@ -65,7 +67,7 @@ public class ClientController {
     @DeleteMapping("/delete/{id}")
     @Operation(summary = "Delete a Client", description = "Delete a Client by Id")
     private ResponseEntity<HttpResponse> blockCard(
-            @Parameter(description = "Card id field used to fetch a Client and delete it")
+            @Parameter(description = "Client id field used to fetch a Client and delete it")
             @PathVariable Long id){
         clientService.deleteClient(id);
         return ResponseUtility.buildResponse(ClientConstant.DELETE_DONE, OK);
