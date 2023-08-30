@@ -66,7 +66,7 @@ public class ClientController {
 
     @DeleteMapping("/delete/{id}")
     @Operation(summary = "Delete a Client", description = "Delete a Client by Id")
-    private ResponseEntity<HttpResponse> blockCard(
+    private ResponseEntity<HttpResponse> deleteClient(
             @Parameter(description = "Client id field used to fetch a Client and delete it")
             @PathVariable Long id){
         clientService.deleteClient(id);

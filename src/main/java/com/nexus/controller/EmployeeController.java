@@ -3,11 +3,13 @@ package com.nexus.controller;
 import com.nexus.constant.EmployeeConstant;
 import com.nexus.dto.CreateEmployeeDTO;
 import com.nexus.dto.EmployeeDTO;
+import com.nexus.dto.UpdateEmployeeDTO;
 import com.nexus.entity.Employee;
 import com.nexus.entity.HttpResponse;
 import com.nexus.service.EmployeeService;
 import com.nexus.utils.ResponseUtility;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import jakarta.validation.Valid;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,6 +54,22 @@ public class EmployeeController {
     private ResponseEntity getEmployeeById(@PathVariable("id") Long id){
         Employee employeeInDB = employeeService.getEmployeeById(id);
         return new ResponseEntity<>(convertToEmployeeDTO(employeeInDB), OK);
+    }
+
+    @PutMapping("/update/{id}")
+    @Operation(summary = "Update a Employee", description = "Update a specific Employee fetched by Id")
+    public ResponseEntity<HttpResponse> updateEmployee(@Valid @RequestBody UpdateEmployeeDTO updateEmployeeDTO, @PathVariable("id") Long id){
+        employeeService.updateEmployee(mapper.map(updateEmployeeDTO, Employee.class), id);
+        return ResponseUtility.buildResponse(EmployeeConstant.UPDATE_DONE, OK);
+    }
+
+    @DeleteMapping("/delete/{id}")
+    @Operation(summary = "Delete an Employee", description = "Delete an Employee by Id")
+    private ResponseEntity<HttpResponse> deleteEmployee(
+            @Parameter(description = "Employee id field used to fetch a Employee and delete it")
+            @PathVariable Long id){
+        employeeService.deleteEmployee(id);
+        return ResponseUtility.buildResponse(EmployeeConstant.DELETE_DONE, OK);
     }
 
     private EmployeeDTO convertToEmployeeDTO(Employee employee){

@@ -41,4 +41,20 @@ public class EmployeeServiceImpl implements EmployeeService {
 
         return employeeInDB;
     }
+
+    public void updateEmployee(Employee employee, Long id){
+        Employee employeeInDB = employeeRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException(String.format(EmployeeConstant.NO_SUCH_ELEMENT, "id", id)));
+
+        employeeInDB.setFirstName(employee.getFirstName());
+        employeeInDB.setLastName(employee.getLastName());
+        employeeInDB.setAddress(employee.getAddress());
+        employeeRepository.save(employeeInDB);
+    }
+
+    public void deleteEmployee(Long id){
+        Employee employeeInDB = employeeRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException(String.format(EmployeeConstant.NO_SUCH_ELEMENT, "id", id)));
+        employeeRepository.deleteById(id);
+    }
 }
